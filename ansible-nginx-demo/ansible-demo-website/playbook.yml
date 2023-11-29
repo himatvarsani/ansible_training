@@ -1,0 +1,72 @@
+---
+- hosts: webserver
+  become: yes
+  gather_facts: no
+  vars:
+    server_name: "34.244.142.30"
+    document_root: /var/www/html
+    app_root: html_demo_site-main
+
+  tasks:
+    - name: Enable amazon-linux-extras packages
+      shell: "amazon-linux-extras enable nginx1"
+
+    - name: Installing nginx
+      yum: 
+        name: nginx
+        state: latest
+        update_cache: yes
+
+    - name: Edit nginx.conf to point to correct directory
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: '^(.*)include \/etc\/nginx\/conf.d\/\*;(.*)$'
+        line: 'include /etc/nginx/sites-enabled/*;'
+        backrefs: yes
+    
+    - name: Creating folder sites-available
+      file:
+        path: "/etc/nginx/sites-available"
+        state: directory
+
+    - name: Creating folder sites-enabled
+      file:
+        path: "/etc/nginx/sites-enabled"
+        state: directory
+
+    - name: Copy website files to the server's document root
+      copy:
+        src: "{{ app_root }}"
+        dest: "{{ document_root }}"
+        mode: preserve
+
+    - name: Apply Nginx template
+      template:
+        src: files/nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify: Restart Nginx
+
+    - name: Enable new site
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      notify: Restart Nginx
+
+    # - name: Allow all access to tcp port 80
+    #   ufw:
+    #     rule: allow
+    #     port: '80'
+    #     proto: tcp
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted

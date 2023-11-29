@@ -1,0 +1,8 @@
+# get the public ip form terraform output
+
+[webserver]      # GROUP OF SERVERS - GROUP NAME - We can call it anything
+34.244.142.30      # IP ADDRESS OF MY EC2 SERVER
+
+[webserver:vars]            # GROUP - WE CALLED IT webser - creating variable with vars
+ansible_user = "ec2-user"   # HOST FILE - USERNAME
+ansible_ssh_private_key_file = "~/.ssh/ansible_ec2_key"

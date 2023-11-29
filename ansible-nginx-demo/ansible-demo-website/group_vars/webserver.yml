@@ -1,0 +1,2 @@
+# With variable always is _ and not a -
+#ansible_default_ipv4.address: "54.247.33.216"
