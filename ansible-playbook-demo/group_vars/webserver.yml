@@ -1,0 +1,2 @@
+# With variable always is _ and not a -
+my_demo_folder_path: "/home/ec2-user/my_new_folder"

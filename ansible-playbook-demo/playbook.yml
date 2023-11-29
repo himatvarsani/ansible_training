@@ -1,0 +1,21 @@
+---
+- hosts: webserver
+# Info about the machine and server
+  gather_facts: no
+  tasks:
+    - name: Creating my new folder
+      file:
+        path: "{{ my_demo_folder_path }}"
+        state: directory
+        owner: ec2-user
+
+    - name: Creating my new file
+      file:
+        path: "{{ my_demo_folder_path }}/new_file.txt"
+        state: touch
+
+    # Delete file - absent from the server state: absent
+    # - name: Deleting my new file
+    #   file:
+    #     path: "/home/ec2-user/my_new_folder/new_file.txt"
+    #     state: absent
